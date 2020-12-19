@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.PasswordReset", "01.PasswordReset\01.PasswordReset.csproj", "{EB52CDE8-FBED-4287-93D1-1FB454B96609}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "02.FancyBarcodes", "02.FancyBarcodes\02.FancyBarcodes.csproj", "{FAB4DFA8-0A32-441D-AAFF-BF6FD4464C9E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "03.HeroesOfCodeAndLogicVII", "03.HeroesOfCodeAndLogicVII\03.HeroesOfCodeAndLogicVII.csproj", "{D6B74E47-BEBB-45C9-9815-57DBAE1279D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1.ActivationKeys", "1.ActivationKeys\1.ActivationKeys.csproj", "{180A3973-DEC3-4E09-A370-896E8B0C4C56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2.EmojiDetector", "2.EmojiDetector\2.EmojiDetector.csproj", "{E5F047D6-9128-424D-B091-B39AFB0A2E92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3.P!rates", "3.P!rates\3.P!rates.csproj", "{CA044926-BA15-476F-A3F4-C37EAD8372FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB52CDE8-FBED-4287-93D1-1FB454B96609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB52CDE8-FBED-4287-93D1-1FB454B96609}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB52CDE8-FBED-4287-93D1-1FB454B96609}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB52CDE8-FBED-4287-93D1-1FB454B96609}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAB4DFA8-0A32-441D-AAFF-BF6FD4464C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAB4DFA8-0A32-441D-AAFF-BF6FD4464C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAB4DFA8-0A32-441D-AAFF-BF6FD4464C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAB4DFA8-0A32-441D-AAFF-BF6FD4464C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6B74E47-BEBB-45C9-9815-57DBAE1279D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6B74E47-BEBB-45C9-9815-57DBAE1279D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6B74E47-BEBB-45C9-9815-57DBAE1279D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6B74E47-BEBB-45C9-9815-57DBAE1279D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{180A3973-DEC3-4E09-A370-896E8B0C4C56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{180A3973-DEC3-4E09-A370-896E8B0C4C56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{180A3973-DEC3-4E09-A370-896E8B0C4C56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{180A3973-DEC3-4E09-A370-896E8B0C4C56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5F047D6-9128-424D-B091-B39AFB0A2E92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5F047D6-9128-424D-B091-B39AFB0A2E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5F047D6-9128-424D-B091-B39AFB0A2E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5F047D6-9128-424D-B091-B39AFB0A2E92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA044926-BA15-476F-A3F4-C37EAD8372FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA044926-BA15-476F-A3F4-C37EAD8372FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA044926-BA15-476F-A3F4-C37EAD8372FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA044926-BA15-476F-A3F4-C37EAD8372FA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62671288-A22F-486E-B31C-1337F2B76D50}
+	EndGlobalSection
+EndGlobal
