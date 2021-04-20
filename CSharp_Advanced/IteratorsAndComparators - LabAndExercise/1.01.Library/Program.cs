@@ -6,7 +6,7 @@ namespace _1._01.Library
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+          
         }
     }
 }
