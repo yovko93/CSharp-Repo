@@ -68,6 +68,7 @@ namespace P05.Quicksort
             var temp = numbers[first];
             numbers[first] = numbers[second];
             numbers[second] = temp;
+
         }
     }
 }
