@@ -1,10 +1,8 @@
-﻿using System;
+﻿using MyFirstMvcApp.Controllers;
 using SUS.HTTP;
+using SUS.MvcFramework;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Diagnostics;
 
 namespace MyFirstMvcApp
 {
@@ -12,54 +10,23 @@ namespace MyFirstMvcApp
     {
         static async Task Main(string[] args)
         {
-            //Console.OutputEncoding = Encoding.UTF8;
-
-            IHttpServer server = new HttpServer();
-
-            server.AddRoute("/", HomePage);
-            server.AddRoute("/favicon.ico", Favicon);
-            server.AddRoute("/about", About); 
-            server.AddRoute("/users/login", Login);
+            List<Route> routeTable = new List<Route>();
             
-            Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
+            routeTable.Add(new Route("/", new HomeController().Index));
+            routeTable.Add(new Route("/users/login", new UsersController().Login));
+            routeTable.Add(new Route("/users/register", new UsersController().Register));
+            routeTable.Add(new Route("/cards/all", new CardsController().All));
+            routeTable.Add(new Route("/cards/add", new CardsController().Add));
+            routeTable.Add(new Route("/cards/collection", new CardsController().Collection));
 
-            await server.StartAsync(80);
+            routeTable.Add(new Route("/favicon.ico", new StaticFilesController().Favicon));
+            routeTable.Add(new Route("/css/bootstrap.min.css", new StaticFilesController().BootstrapCss));
+            routeTable.Add(new Route("/css/custom.css", new StaticFilesController().CustomCss));
+            routeTable.Add(new Route("/js/custom.js", new StaticFilesController().CustomJs));
+            routeTable.Add(new Route("/js/bootstrap.bundle.min.js", new StaticFilesController().BootstrapJs));
 
-        }
+            await Host.CreateHostAsync(routeTable, 80);
 
-        static HttpResponse HomePage(HttpRequest request)
-        {
-            var responseHtml = "<h1>Welcome!</h1>" + request.Headers.FirstOrDefault(x => x.Name == "User-Agent")?.Value;
-            var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
-            var response = new HttpResponse("text/html", responseBodyBytes);
-
-            return response;
-        }
-
-        static HttpResponse Favicon(HttpRequest request)
-        {
-            var fileBytes = File.ReadAllBytes("wwwroot/favicon.ico");
-            var response = new HttpResponse("image/vnd.microsoft.ico", fileBytes);
-
-            return response;
-        }
-
-        static HttpResponse About(HttpRequest request)
-        {
-            var responseHtml = "<h1>About...</h1>";
-            var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
-            var response = new HttpResponse("text/html", responseBodyBytes);
-           
-            return response;
-        }
-
-        static HttpResponse Login(HttpRequest request)
-        {
-            var responseHtml = "<h1>Login</h1>";
-            var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
-            var response = new HttpResponse("text/html", responseBodyBytes);
-
-            return response;
         }
     }
 }
