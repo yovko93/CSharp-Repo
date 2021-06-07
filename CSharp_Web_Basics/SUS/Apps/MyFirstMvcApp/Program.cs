@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 
 namespace MyFirstMvcApp
 {
@@ -19,6 +20,8 @@ namespace MyFirstMvcApp
             server.AddRoute("/favicon.ico", Favicon);
             server.AddRoute("/about", About); 
             server.AddRoute("/users/login", Login);
+            
+            Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
 
             await server.StartAsync(80);
 
