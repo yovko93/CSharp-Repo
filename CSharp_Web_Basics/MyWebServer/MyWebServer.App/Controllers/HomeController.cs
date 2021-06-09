@@ -13,6 +13,8 @@ namespace MyWebServer.App.Controllers
         public HttpResponse Index()
             => Text("Hello from Yovko!");
 
+        public HttpResponse LocalRedirect() => Redirect("/Cats");
+
         public HttpResponse ToSoftUni() => Redirect("https://softuni.bg");
     }
 }
