@@ -1,10 +1,9 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace MyWebServer.Server.Http
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
     public class HttpRequest
     {
         private const string NewLine = "\r\n";
@@ -47,7 +46,6 @@ namespace MyWebServer.Server.Http
             };
         }
 
-      
         private static HttpMethod ParseHttpMethod(string method)
             => method.ToUpper() switch
             {
@@ -64,10 +62,19 @@ namespace MyWebServer.Server.Http
 
             var path = urlParts[0];
 
-            var query = new Dictionary<string, string>();
+            var query = urlParts.Length > 1
+                ? ParseQuery(urlParts[1])
+                : new Dictionary<string, string>();
 
             return (path, query);
         }
+
+        private static Dictionary<string, string> ParseQuery(string queryString)
+            => queryString
+                    .Split('&')
+                    .Select(part => part.Split('='))
+                    .Where(part => part.Length == 2)
+                    .ToDictionary(part => part[0], part => part[1]);
 
         private static HttpHeaderCollection ParseHttpHeaders(IEnumerable<string> headerLines)
         {
