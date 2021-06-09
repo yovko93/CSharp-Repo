@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MyWebServer.Http;
 
 namespace MyWebServer.Responses
 {
-    class RedirectResponse
+    public class RedirectResponse : HttpResponse
     {
+        public RedirectResponse(string location) 
+            : base(HttpStatusCode.Found)
+        {
+            this.Headers.Add("Location", location);
+        }
     }
 }
