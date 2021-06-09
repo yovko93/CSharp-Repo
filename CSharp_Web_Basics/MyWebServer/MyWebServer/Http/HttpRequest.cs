@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MyWebServer.Server.Http
+namespace MyWebServer.Http
 {
     public class HttpRequest
     {
@@ -13,6 +13,11 @@ namespace MyWebServer.Server.Http
         public string Path { get; private set; }
 
         public Dictionary<string, string> Query { get; private set; }
+
+        public HttpResponse Index()
+        {
+            throw new NotImplementedException();
+        }
 
         public HttpHeaderCollection Headers { get; private set; }
 
@@ -58,7 +63,7 @@ namespace MyWebServer.Server.Http
 
         private static (string, Dictionary<string, string>) ParseUrl(string url)
         {
-            var urlParts = url.Split('?');
+            var urlParts = url.Split('?', 2);
 
             var path = urlParts[0];
 
@@ -74,7 +79,7 @@ namespace MyWebServer.Server.Http
                     .Split('&')
                     .Select(part => part.Split('='))
                     .Where(part => part.Length == 2)
-                    .ToDictionary(part => part[0], part => part[1]);
+                    .ToDictionary(part => part.First(), part => part.Last());
 
         private static HttpHeaderCollection ParseHttpHeaders(IEnumerable<string> headerLines)
         {

@@ -1,8 +1,8 @@
 ﻿
-namespace MyWebServer.Server
+namespace MyWebServer
 {
-    using MyWebServer.Server.Http;
-    using MyWebServer.Server.Routing;
+    using MyWebServer.Http;
+    using MyWebServer.Routing;
     using System;
     using System.Net;
     using System.Net.Sockets;

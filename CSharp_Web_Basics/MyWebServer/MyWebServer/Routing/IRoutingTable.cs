@@ -1,13 +1,13 @@
-﻿using MyWebServer.Server.Http;
+﻿using MyWebServer.Http;
 using System;
 
-namespace MyWebServer.Server.Routing
+namespace MyWebServer.Routing
 {
     public interface IRoutingTable
     {
         IRoutingTable Map(HttpMethod method, string path, HttpResponse response);
         IRoutingTable Map(HttpMethod method, string path, Func<HttpRequest, HttpResponse> responseFunction);
-
+       
         IRoutingTable MapGet(string path, HttpResponse response);
 
         IRoutingTable MapGet(string path, Func<HttpRequest, HttpResponse> responseFunction);
