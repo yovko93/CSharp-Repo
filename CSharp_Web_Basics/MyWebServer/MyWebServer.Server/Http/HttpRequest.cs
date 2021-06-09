@@ -11,7 +11,9 @@ namespace MyWebServer.Server.Http
 
         public HttpMethod Method { get; private set; }
 
-        public string Url { get; private set; }
+        public string Path { get; private set; }
+
+        public Dictionary<string, string> Query { get; private set; }
 
         public HttpHeaderCollection Headers { get; private set; }
 
@@ -26,6 +28,8 @@ namespace MyWebServer.Server.Http
             var method = ParseHttpMethod(startLine[0]);
             var url = startLine[1];
 
+            var (path, query) = ParseUrl(url);
+
             var headers = ParseHttpHeaders(lines.Skip(1));
 
 
@@ -36,12 +40,14 @@ namespace MyWebServer.Server.Http
             return new HttpRequest
             {
                 Method = method,
-                Url = url,
+                Path = path,
+                Query = query,
                 Headers = headers,
                 Body = body,
             };
         }
 
+      
         private static HttpMethod ParseHttpMethod(string method)
             => method.ToUpper() switch
             {
@@ -51,6 +57,17 @@ namespace MyWebServer.Server.Http
                 "DELETE" => HttpMethod.Delete,
                 _ => throw new InvalidOperationException($"Method '{method}' is not supported."),
             };
+
+        private static (string, Dictionary<string, string>) ParseUrl(string url)
+        {
+            var urlParts = url.Split('?');
+
+            var path = urlParts[0];
+
+            var query = new Dictionary<string, string>();
+
+            return (path, query);
+        }
 
         private static HttpHeaderCollection ParseHttpHeaders(IEnumerable<string> headerLines)
         {
