@@ -2,9 +2,12 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SUS.MvcFramework.ViewEngine
 {
@@ -12,15 +15,30 @@ namespace SUS.MvcFramework.ViewEngine
     {
         public string GetHtml(string templateCode, object viewModel)
         {
-            string csharpCode = GenerateCSharpFromTemplate(templateCode);
+            string csharpCode = GenerateCSharpFromTemplate(templateCode, viewModel);
             IView executableObject = GenerateExecutableCode(csharpCode, viewModel);
             string html = executableObject.ExecuteTemplate(viewModel);
 
             return html;
         }
-        private string GenerateCSharpFromTemplate(string templateCode)
+
+        private string GenerateCSharpFromTemplate(string templateCode, object viewModel)
         {
-            string methodBody = GetMethodBody(templateCode);
+            string typeOfModel = "object";
+            if (viewModel != null)
+            {
+                if (viewModel.GetType().IsGenericType)
+                {
+                    var modelName = viewModel.GetType().FullName;
+                    var genericArguments = viewModel.GetType().GenericTypeArguments;
+                    typeOfModel = modelName.Substring(0, modelName.IndexOf('`')) + "<" + string.Join(",", genericArguments.Select(x => x.FullName)) + ">";
+                }
+                else
+                {
+                    typeOfModel = viewModel.GetType().FullName;
+                }
+            }
+
             string csharpCode = @"
 using System;
 using System.Text;
@@ -34,9 +52,10 @@ namespace ViewNamespace
     {
         public string ExecuteTemplate(object viewModel)
         {
+            var Model = viewModel as " + typeOfModel + @";
             var html = new StringBuilder();
 
-            " + methodBody + @"
+            " + GetMethodBody(templateCode) + @"
 
             return html.ToString();
         }
@@ -49,7 +68,50 @@ namespace ViewNamespace
 
         private string GetMethodBody(string templateCode)
         {
-            throw new System.NotImplementedException();
+            Regex csharpCodeRegex = new Regex(@"[^\""\s&\'\<]+");
+            var supportedOperators = new List<string> { "for", "while", "if", "else", "foreach" };
+            StringBuilder csharpCode = new StringBuilder();
+            StringReader sr = new StringReader(templateCode);
+            string line;
+
+            while ((line = sr.ReadLine()) != null)
+            {
+                if (supportedOperators
+                    .Any(x => line.TrimStart().StartsWith("@" + x)))
+                {
+                    var atSignLocation = line.IndexOf("@");
+                    line = line.Remove(atSignLocation, 1);
+                    csharpCode.AppendLine(line);
+                }
+                else if (line.TrimStart().StartsWith("{") ||
+                    line.TrimStart().StartsWith("}"))
+                {
+                    csharpCode.AppendLine(line);
+                }
+                else
+                {
+                    csharpCode.Append($"html.AppendLine(@\"");
+
+                    while (line.Contains("@"))
+                    {
+                        var atSignLocation = line.IndexOf("@");
+                        var htmlBeforeAsSign = line.Substring(0, atSignLocation);
+                        csharpCode.Append(htmlBeforeAsSign.Replace("\"", "\"\"") + "\" + ");
+
+                        var lineAfterAsSign = line.Substring(atSignLocation + 1);
+                        var code = csharpCodeRegex.Match(lineAfterAsSign).Value;
+                        csharpCode.Append(code + " + @\"");
+                        line = lineAfterAsSign.Substring(code.Length);
+                    }
+
+                    //csharpCode.AppendLine($"html.AppendLine(@\"{line.Replace("\"", "\"\"")}\");");
+
+                    csharpCode.AppendLine(line.Replace("\"", "\"\"") + "\");");
+                }
+
+            }
+
+            return csharpCode.ToString();
         }
 
         private IView GenerateExecutableCode(string csharpCode, object viewModel)
@@ -65,6 +127,7 @@ namespace ViewNamespace
                     .AddReferences(MetadataReference.CreateFromFile(viewModel.GetType().Assembly.Location));
             }
 
+            //TODO: net5.0 ?? netstandart
             var libraries = Assembly.Load(
                 new AssemblyName("netstandart")).GetReferencedAssemblies();
 
@@ -89,12 +152,19 @@ namespace ViewNamespace
                         csharpCode);
                 }
 
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                var byteAssembly = memoryStream.ToArray();
-                var assembly = Assembly.Load(byteAssembly);
-                var viewType = assembly.GetType("ViewNamespace.ViewClass");
-                var instance = Activator.CreateInstance(viewType);
-                return instance as IView;
+                try
+                {
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    var byteAssembly = memoryStream.ToArray();
+                    var assembly = Assembly.Load(byteAssembly);
+                    var viewType = assembly.GetType("ViewNamespace.ViewClass");
+                    var instance = Activator.CreateInstance(viewType);
+                    return instance as IView;
+                }
+                catch (Exception ex)
+                {
+                    return new ErrorView(new List<string> { ex.ToString() }, csharpCode);
+                }
             }
         }
     }

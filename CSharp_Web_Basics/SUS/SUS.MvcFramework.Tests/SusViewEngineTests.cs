@@ -32,13 +32,11 @@ namespace SUS.MvcFramework.Tests
             Assert.Equal(expectedResult, result);
         }
 
-        public class TestViewModel
+        [Fact]
+        public void TestTemplateViewModel()
         {
-            public string Name { get; set; }
+            
 
-            public decimal Price { get; set; }
-
-            public DateTime DateOfBirth { get; set; }
         }
     }
 }
