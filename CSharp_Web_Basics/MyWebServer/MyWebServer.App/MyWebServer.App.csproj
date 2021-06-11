@@ -10,6 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Views\Animals\Cats.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Views\Animals\Dogs.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
