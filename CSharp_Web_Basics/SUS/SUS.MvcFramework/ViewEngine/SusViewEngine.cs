@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace SUS.MvcFramework.ViewEngine
 {
+    // RAZOR VIEW ENGINE
     public class SusViewEngine : IViewEngine
     {
         public string GetHtml(string templateCode, object viewModel)
@@ -31,7 +32,8 @@ namespace SUS.MvcFramework.ViewEngine
                 {
                     var modelName = viewModel.GetType().FullName;
                     var genericArguments = viewModel.GetType().GenericTypeArguments;
-                    typeOfModel = modelName.Substring(0, modelName.IndexOf('`')) + "<" + string.Join(",", genericArguments.Select(x => x.FullName)) + ">";
+                    typeOfModel = modelName.Substring(0, modelName.IndexOf('`'))
+                        + "<" + string.Join(",", genericArguments.Select(x => x.FullName)) + ">";
                 }
                 else
                 {
@@ -76,8 +78,7 @@ namespace ViewNamespace
 
             while ((line = sr.ReadLine()) != null)
             {
-                if (supportedOperators
-                    .Any(x => line.TrimStart().StartsWith("@" + x)))
+                if (supportedOperators.Any(x => line.TrimStart().StartsWith("@" + x)))
                 {
                     var atSignLocation = line.IndexOf("@");
                     line = line.Remove(atSignLocation, 1);
@@ -95,16 +96,14 @@ namespace ViewNamespace
                     while (line.Contains("@"))
                     {
                         var atSignLocation = line.IndexOf("@");
-                        var htmlBeforeAsSign = line.Substring(0, atSignLocation);
-                        csharpCode.Append(htmlBeforeAsSign.Replace("\"", "\"\"") + "\" + ");
+                        var htmlBeforeAtSign = line.Substring(0, atSignLocation);
+                        csharpCode.Append(htmlBeforeAtSign.Replace("\"", "\"\"") + "\" + ");
 
-                        var lineAfterAsSign = line.Substring(atSignLocation + 1);
-                        var code = csharpCodeRegex.Match(lineAfterAsSign).Value;
+                        var lineAfterAtSign = line.Substring(atSignLocation + 1);
+                        var code = csharpCodeRegex.Match(lineAfterAtSign).Value;
                         csharpCode.Append(code + " + @\"");
-                        line = lineAfterAsSign.Substring(code.Length);
+                        line = lineAfterAtSign.Substring(code.Length);
                     }
-
-                    //csharpCode.AppendLine($"html.AppendLine(@\"{line.Replace("\"", "\"\"")}\");");
 
                     csharpCode.AppendLine(line.Replace("\"", "\"\"") + "\");");
                 }
@@ -127,9 +126,8 @@ namespace ViewNamespace
                     .AddReferences(MetadataReference.CreateFromFile(viewModel.GetType().Assembly.Location));
             }
 
-            //TODO: net5.0 ?? netstandart
             var libraries = Assembly.Load(
-                new AssemblyName("netstandart")).GetReferencedAssemblies();
+                new AssemblyName("netstandard")).GetReferencedAssemblies();
 
             foreach (var library in libraries)
             {
@@ -148,8 +146,7 @@ namespace ViewNamespace
                 {
                     return new ErrorView(result.Diagnostics
                         .Where(x => x.Severity == DiagnosticSeverity.Error)
-                        .Select(x => x.GetMessage()),
-                        csharpCode);
+                        .Select(x => x.GetMessage()), csharpCode);
                 }
 
                 try
@@ -159,7 +156,8 @@ namespace ViewNamespace
                     var assembly = Assembly.Load(byteAssembly);
                     var viewType = assembly.GetType("ViewNamespace.ViewClass");
                     var instance = Activator.CreateInstance(viewType);
-                    return instance as IView;
+                    return (instance as IView)
+                       ?? new ErrorView(new List<string> { "Instance is null!" }, csharpCode);
                 }
                 catch (Exception ex)
                 {
