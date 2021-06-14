@@ -1,5 +1,5 @@
-﻿using System;
-using System.Net.Http;
+﻿using SUS.HTTP;
+using System;
 
 namespace SUS.MvcFramework
 {

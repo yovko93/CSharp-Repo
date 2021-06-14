@@ -1,9 +1,9 @@
-﻿using MyFirstMvcApp.ViewModels;
+﻿using BattleCards.ViewModels;
 using SUS.HTTP;
 using SUS.MvcFramework;
 using System;
 
-namespace MyFirstMvcApp.Controllers
+namespace BattleCards.Controllers
 {
     public class HomeController : Controller
     {
@@ -14,12 +14,12 @@ namespace MyFirstMvcApp.Controllers
             viewModel.CurrentYear = DateTime.UtcNow.Year;
             viewModel.Message = "Welcome to Battle Cards";
 
-            return this.View(viewModel);
+            return View(viewModel);
         }
 
         public HttpResponse About()
         {
-            return this.View();
+            return View();
         }
 
     }

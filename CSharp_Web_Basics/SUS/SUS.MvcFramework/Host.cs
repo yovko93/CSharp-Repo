@@ -13,11 +13,11 @@ namespace SUS.MvcFramework
         {
             List<Route> routeTable = new List<Route>();
 
-            AutoRegisterStaticFile(routeTable);
-            AutoRegisterRoutes(routeTable, application);
-
             application.ConfigureServices();
             application.Configure(routeTable);
+
+            AutoRegisterStaticFile(routeTable);
+            AutoRegisterRoutes(routeTable, application);
 
             Console.WriteLine("All registered routes:");
 
@@ -33,7 +33,7 @@ namespace SUS.MvcFramework
             await server.StartAsync(port);
         }
 
-        private static void AutoRegisterRoutes(List<Route> routeTable, IMvcApplication application, IServiceCollection serviceCollection)
+        private static void AutoRegisterRoutes(List<Route> routeTable, IMvcApplication application)
         {
             var controllerTypes = application.GetType().Assembly.GetTypes()
                 .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(Controller)));
@@ -63,7 +63,13 @@ namespace SUS.MvcFramework
                         url = attribute.Url;
                     }
 
-                    routeTable.Add(new Route(url, httpMethod, request => ExecuteAction(request, controllerType, method, serviceCollection)));
+                    routeTable.Add(new Route(url, httpMethod, (request) =>
+                    {
+                        var instance = Activator.CreateInstance(controllerType) as Controller;
+                        instance.Request = request;
+                        var response = method.Invoke(instance, new object[] { }) as HttpResponse;
+                        return response;
+                    }));
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+﻿using SUS.HTTP;
 
 namespace SUS.MvcFramework
 {

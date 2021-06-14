@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{E6E581F0-D440-43EB-A517-0DBC3D438A95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFirstMvcApp", "Apps\MyFirstMvcApp\MyFirstMvcApp.csproj", "{68886510-6BE2-4112-A24A-A61EE8344619}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SUS.HTTP", "SUS.HTTP\SUS.HTTP.csproj", "{D8BEC291-C305-4F2E-B3C6-AA95DDD3AE0E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SUS.MvcFramework", "SUS.MvcFramework\SUS.MvcFramework.csproj", "{72D8E8E7-100E-4498-9770-DC1685D2B856}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SUS.MvcFramework.Tests", "SUS.MvcFramework.Tests\SUS.MvcFramework.Tests.csproj", "{4537E958-A80A-4F04-BE8A-4370292FB8CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SUS.MvcFramework.Tests", "SUS.MvcFramework.Tests\SUS.MvcFramework.Tests.csproj", "{4537E958-A80A-4F04-BE8A-4370292FB8CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleCards", "Apps\BattleCards\BattleCards.csproj", "{77BD63D8-35BA-41A6-8B40-683E987DFE47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{68886510-6BE2-4112-A24A-A61EE8344619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68886510-6BE2-4112-A24A-A61EE8344619}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68886510-6BE2-4112-A24A-A61EE8344619}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68886510-6BE2-4112-A24A-A61EE8344619}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D8BEC291-C305-4F2E-B3C6-AA95DDD3AE0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8BEC291-C305-4F2E-B3C6-AA95DDD3AE0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8BEC291-C305-4F2E-B3C6-AA95DDD3AE0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,12 +31,16 @@ Global
 		{4537E958-A80A-4F04-BE8A-4370292FB8CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4537E958-A80A-4F04-BE8A-4370292FB8CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4537E958-A80A-4F04-BE8A-4370292FB8CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77BD63D8-35BA-41A6-8B40-683E987DFE47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77BD63D8-35BA-41A6-8B40-683E987DFE47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77BD63D8-35BA-41A6-8B40-683E987DFE47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77BD63D8-35BA-41A6-8B40-683E987DFE47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{68886510-6BE2-4112-A24A-A61EE8344619} = {E6E581F0-D440-43EB-A517-0DBC3D438A95}
+		{77BD63D8-35BA-41A6-8B40-683E987DFE47} = {E6E581F0-D440-43EB-A517-0DBC3D438A95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CFED92D-67C2-402F-8BD6-0815F6A61EF3}
