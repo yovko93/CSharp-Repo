@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BattleCards.Data
 {
-    public class User //: IdentityUser<string>
+    public class User : IdentityUser<string>
     {
         public User()
         {
@@ -14,18 +14,6 @@ namespace BattleCards.Data
             //this.Role = IdentityRole.User;
             this.Cards = new HashSet<UserCard>();
         }
-
-        public string Id { get; set; }
-
-        [Required]
-        [MaxLength(20)]
-        public string Username { get; set; }
-
-        [Required]
-        public string Email { get; set; }
-
-        [Required]
-        public string Password { get; set; }
 
         //public IdentityRole Role { get; set; }
 
