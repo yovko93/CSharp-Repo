@@ -1,5 +1,6 @@
 ﻿using MyWebServer.Controllers;
 using MyWebServer.Http;
+using System;
 
 namespace MyWebServer.App.Controllers
 {
@@ -16,5 +17,7 @@ namespace MyWebServer.App.Controllers
         public HttpResponse LocalRedirect() => Redirect("/Cats");
 
         public HttpResponse ToSoftUni() => Redirect("https://softuni.bg");
+
+        public HttpResponse Error() => throw new InvalidOperationException("Invalid acion");
     }
 }
