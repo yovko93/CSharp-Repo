@@ -61,7 +61,11 @@ namespace MyWebServer.Http
             };
         }
 
-       
+        public override string ToString()
+        {
+            //TODO:
+            return null;
+        }
 
         private static HttpMethod ParseMethod(string method)
             => method.ToUpper() switch
