@@ -1,19 +1,20 @@
 ﻿using MyWebServer.Common;
+using MyWebServer.Http.Collections;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace MyWebServer.Http
 {
+
     public class HttpResponse
     {
         public HttpResponse(HttpStatusCode statusCode)
         {
             this.StatusCode = statusCode;
 
-            this.AddHeader(HttpHeader.Server, "My Web Server");
-            this.AddHeader(HttpHeader.Date, $"{DateTime.UtcNow:r}");
+            this.Headers.Add(HttpHeader.Server, "My Web Server");
+            this.Headers.Add(HttpHeader.Date, $"{DateTime.UtcNow:r}");
         }
 
         public HttpStatusCode StatusCode { get; protected set; }
@@ -27,24 +28,8 @@ namespace MyWebServer.Http
         public bool HasContent => this.Content != null && this.Content.Any();
 
         public static HttpResponse ForError(string message)
-           => new HttpResponse(HttpStatusCode.InternalServerError)
-               .SetContent(message, HttpContentType.PlainText);
-
-        public void AddHeader(string name, string value)
-        {
-            Guard.AgainstNull(name, nameof(name));
-            Guard.AgainstNull(value, nameof(value));
-
-            this.Headers[name] = new HttpHeader(name, value);
-        }
-
-        public void AddCookie(string name, string value)
-        {
-            Guard.AgainstNull(name, nameof(name));
-            Guard.AgainstNull(value, nameof(value));
-
-            this.Cookies[name] = new HttpCookie(name, value);
-        }
+            => new HttpResponse(HttpStatusCode.InternalServerError)
+                .SetContent(message, HttpContentType.PlainText);
 
         public HttpResponse SetContent(string content, string contentType)
         {

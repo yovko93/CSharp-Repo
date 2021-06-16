@@ -1,52 +1,74 @@
-﻿
+﻿using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using MyWebServer.Http;
+using MyWebServer.Routing;
+using MyWebServer.Services;
+
 namespace MyWebServer
 {
-    using MyWebServer.Http;
-    using MyWebServer.Routing;
-    using System;
-    using System.Net;
-    using System.Net.Sockets;
-    using System.Text;
-    using System.Threading.Tasks;
 
     public class HttpServer
     {
         private readonly IPAddress ipAddress;
         private readonly int port;
-        private readonly TcpListener tcpListener;
+        private readonly TcpListener listener;
 
         private readonly RoutingTable routingTable;
+        private readonly ServiceCollection serviceCollection;
 
-        public HttpServer(string ipAddress, int port, Action<IRoutingTable> routingTableConfiguration)
+        private HttpServer(string ipAddress, int port, IRoutingTable routingTable)
         {
             this.ipAddress = IPAddress.Parse(ipAddress);
             this.port = port;
 
-            tcpListener = new TcpListener(this.ipAddress, port);
+            listener = new TcpListener(this.ipAddress, port);
 
-            routingTableConfiguration(this.routingTable = new RoutingTable());
+            this.routingTable = (RoutingTable)routingTable;
+
+            this.serviceCollection = new ServiceCollection();
         }
 
-        public HttpServer(int port, Action<IRoutingTable> routingTable)
+        private HttpServer(int port, IRoutingTable routingTable)
             : this("127.0.0.1", port, routingTable)
         {
         }
 
-        public HttpServer(Action<IRoutingTable> routingTable)
+        private HttpServer(IRoutingTable routingTable)
             : this(5000, routingTable)
         {
         }
 
+        public static HttpServer WithRoutes(Action<IRoutingTable> routingTableConfiguration)
+        {
+            var routingTable = new RoutingTable();
+
+            routingTableConfiguration(routingTable);
+
+            var httpServer = new HttpServer(routingTable);
+
+            return httpServer;
+        }
+
+        public HttpServer WithServices(Action<IServiceCollection> serviceCollectionConfiguration)
+        {
+            serviceCollectionConfiguration(this.serviceCollection);
+
+            return this;
+        }
+
         public async Task Start()
         {
-            this.tcpListener.Start();
+            this.listener.Start();
 
             Console.WriteLine($"Server started on port {port}...");
-            Console.WriteLine("Listening for request...");
+            Console.WriteLine("Listening for requests...");
 
             while (true)
             {
-                var connection = await this.tcpListener.AcceptTcpClientAsync();
+                var connection = await this.listener.AcceptTcpClientAsync();
 
                 _ = Task.Run(async () =>
                 {
@@ -54,11 +76,9 @@ namespace MyWebServer
 
                     var requestText = await this.ReadRequest(networkStream);
 
-                    //Console.WriteLine(requestText);
-
                     try
                     {
-                        var request = HttpRequest.Parse(requestText);
+                        var request = HttpRequest.Parse(requestText, this.serviceCollection);
 
                         var response = this.routingTable.ExecuteRequest(request);
 
@@ -68,9 +88,9 @@ namespace MyWebServer
 
                         await WriteResponse(networkStream, response);
                     }
-                    catch (Exception exc)
+                    catch (Exception exception)
                     {
-                        await HandleError(networkStream, exc);
+                        await HandleError(networkStream, exception);
                     }
 
                     connection.Close();
@@ -115,9 +135,11 @@ namespace MyWebServer
             }
         }
 
-        private async Task HandleError(NetworkStream networkStream, Exception exc)
+        private async Task HandleError(
+            NetworkStream networkStream,
+            Exception exception)
         {
-            var errorMessage = $"{exc.Message}{Environment.NewLine}{exc.StackTrace}";
+            var errorMessage = $"{exception.Message}{Environment.NewLine}{exception.StackTrace}";
 
             var errorResponse = HttpResponse.ForError(errorMessage);
 
@@ -127,13 +149,14 @@ namespace MyWebServer
         private void LogPipeline(string request, string response)
         {
             var separator = new string('-', 50);
+
             var log = new StringBuilder();
 
             log.AppendLine();
             log.AppendLine(separator);
 
             log.AppendLine("REQUEST:");
-            log.AppendLine(request.ToString());
+            log.AppendLine(request);
 
             log.AppendLine();
 
@@ -146,8 +169,8 @@ namespace MyWebServer
         }
 
         private async Task WriteResponse(
-             NetworkStream networkStream,
-             HttpResponse response)
+            NetworkStream networkStream,
+            HttpResponse response)
         {
             var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
 

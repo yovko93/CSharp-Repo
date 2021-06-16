@@ -4,8 +4,11 @@ namespace MyWebServer.Results
 {
     public class ContentResult : ActionResult
     {
-        public ContentResult(HttpResponse response, string content, string contentType)
+        public ContentResult(
+            HttpResponse response,
+            string content,
+            string contentType)
             : base(response)
-            => this.PrepareContent(content, contentType);
+            => this.SetContent(content, contentType);
     }
 }

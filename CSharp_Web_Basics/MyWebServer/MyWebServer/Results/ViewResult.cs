@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace MyWebServer.Results
 {
+
     public class ViewResult : ActionResult
     {
         private const char PathSeparator = '/';
@@ -11,8 +12,8 @@ namespace MyWebServer.Results
         public ViewResult(
             HttpResponse response,
             string viewName,
-            string controllerName, 
-            object model) 
+            string controllerName,
+            object model)
             : base(response)
             => this.GetHtml(viewName, controllerName, model);
 
@@ -23,11 +24,12 @@ namespace MyWebServer.Results
                 viewName = controllerName + PathSeparator + viewName;
             }
 
-            var viewPath = Path.GetFullPath("./Views/" + viewName.TrimStart(PathSeparator) + ".cshtml");
+            var viewPath = Path.GetFullPath($"./Views/" + viewName.TrimStart(PathSeparator) + ".cshtml");
 
             if (!File.Exists(viewPath))
             {
                 this.PrepareMissingViewError(viewPath);
+
                 return;
             }
 
@@ -38,15 +40,25 @@ namespace MyWebServer.Results
                 viewContent = this.PopulateModel(viewContent, model);
             }
 
-            this.PrepareContent(viewContent, HttpContentType.Html);
+            var layoutPath = Path.GetFullPath("./Views/Layout.cshtml");
+
+            if (File.Exists(layoutPath))
+            {
+                var layoutContent = File.ReadAllText(layoutPath);
+
+                viewContent = layoutContent.Replace("@RenderBody()", viewContent);
+            }
+
+            this.SetContent(viewContent, HttpContentType.Html);
         }
 
         private void PrepareMissingViewError(string viewPath)
         {
             this.StatusCode = HttpStatusCode.NotFound;
+
             var errorMessage = $"View '{viewPath}' was not found.";
 
-            this.PrepareContent(errorMessage, HttpContentType.PlainText);
+            this.SetContent(errorMessage, HttpContentType.PlainText);
         }
 
         private string PopulateModel(string viewContent, object model)
@@ -56,16 +68,13 @@ namespace MyWebServer.Results
                 .GetProperties()
                 .Select(pr => new
                 {
-                    Name = pr.Name,
+                    pr.Name,
                     Value = pr.GetValue(model)
                 });
 
-            const string openingBrackets = "{{";
-            const string closingBrackets = "}}";
-
             foreach (var entry in data)
             {
-                viewContent = viewContent.Replace($"{openingBrackets}{entry.Name}{closingBrackets}", entry.Value.ToString());
+                viewContent = viewContent.Replace($"@Model.{entry.Name}", entry.Value.ToString());
             }
 
             return viewContent;

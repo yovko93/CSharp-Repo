@@ -6,11 +6,6 @@ namespace MyWebServer.App.Controllers
 {
     public class AccountController : Controller
     {
-        public AccountController(HttpRequest request) 
-            : base(request)
-        {
-        }
-
         public HttpResponse Login()
         {
             // var user = this.db.Users.Find(username, password);
@@ -48,19 +43,23 @@ namespace MyWebServer.App.Controllers
             return Text("User is not authenticated!");
         }
 
+        [Authorize]
+        public HttpResponse AuthorizationCheck()
+            => Text($"Current user: {this.User.Id}");
+
         public HttpResponse CookiesCheck()
         {
             const string cookieName = "My-Cookie";
 
-            if (this.Request.Cookies.ContainsKey(cookieName))
+            if (this.Request.Cookies.Contains(cookieName))
             {
                 var cookie = this.Request.Cookies[cookieName];
 
-                return Text($"Cookies already exist - {cookie}");
+                return Text($"Cookies already exist - {cookie}!");
             }
 
-            this.Response.AddCookie(cookieName, "My-Value");
-            this.Response.AddCookie("My-Second-Cookie", "My-Second-Value");
+            this.Response.Cookies.Add(cookieName, "My-Value");
+            this.Response.Cookies.Add("My-Second-Cookie", "My-Second-Value");
 
             return Text("Cookies set!");
         }

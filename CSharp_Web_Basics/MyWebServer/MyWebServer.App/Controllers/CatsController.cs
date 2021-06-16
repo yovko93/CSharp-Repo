@@ -1,23 +1,32 @@
-﻿using MyWebServer.Controllers;
+﻿using MyWebServer.App.Data;
+using MyWebServer.Controllers;
 using MyWebServer.Http;
+using System.Linq;
 
 namespace MyWebServer.App.Controllers
 {
+
     public class CatsController : Controller
     {
-        public CatsController(HttpRequest request) 
-            : base(request)
+        private readonly IData data;
+
+        public CatsController(IData data)
+            => this.data = data;
+
+        public HttpResponse All()
         {
+            var cats = this.data
+                .Cats
+                .ToList();
+
+            return View(cats);
         }
 
+        [HttpGet]
         public HttpResponse Create() => View();
 
-        public HttpResponse Save()
-        {
-            var name = this.Request.Form["Name"];
-            var age = this.Request.Form["Age"];
-
-            return Text($"{name} - {age}");
-        }
+        [HttpPost]
+        public HttpResponse Save(string name, int age)
+            => Text($"{name} - {age}");
     }
 }
