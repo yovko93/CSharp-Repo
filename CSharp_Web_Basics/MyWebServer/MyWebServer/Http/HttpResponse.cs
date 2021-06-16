@@ -1,6 +1,7 @@
 ﻿using MyWebServer.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MyWebServer.Http
@@ -17,17 +18,17 @@ namespace MyWebServer.Http
 
         public HttpStatusCode StatusCode { get; protected set; }
 
-        public IDictionary<string, HttpHeader> Headers { get; } = new Dictionary<string, HttpHeader>();
+        public HeaderCollection Headers { get; } = new();
 
-        public IDictionary<string, HttpCookie> Cookies { get; } = new Dictionary<string, HttpCookie>();
+        public CookieCollection Cookies { get; } = new();
 
-        public string Content { get; protected set; }
+        public byte[] Content { get; protected set; }
+
+        public bool HasContent => this.Content != null && this.Content.Any();
 
         public static HttpResponse ForError(string message)
-            => new HttpResponse(HttpStatusCode.InternalServerError)
-            {
-                Content = message
-            };
+           => new HttpResponse(HttpStatusCode.InternalServerError)
+               .SetContent(message, HttpContentType.PlainText);
 
         public void AddHeader(string name, string value)
         {
@@ -45,42 +46,56 @@ namespace MyWebServer.Http
             this.Cookies[name] = new HttpCookie(name, value);
         }
 
+        public HttpResponse SetContent(string content, string contentType)
+        {
+            Guard.AgainstNull(content, nameof(content));
+            Guard.AgainstNull(content, nameof(contentType));
+
+            var contentLength = Encoding.UTF8.GetByteCount(content).ToString();
+
+            this.Headers.Add(HttpHeader.ContentType, contentType);
+            this.Headers.Add(HttpHeader.ContentLength, contentLength);
+
+            this.Content = Encoding.UTF8.GetBytes(content);
+
+            return this;
+        }
+
+        public HttpResponse SetContent(byte[] content, string contentType)
+        {
+            Guard.AgainstNull(content, nameof(content));
+            Guard.AgainstNull(content, nameof(contentType));
+
+            this.Headers.Add(HttpHeader.ContentType, contentType);
+            this.Headers.Add(HttpHeader.ContentLength, content.Length.ToString());
+
+            this.Content = content;
+
+            return this;
+        }
+
         public override string ToString()
         {
             var result = new StringBuilder();
 
             result.AppendLine($"HTTP/1.1 {(int)this.StatusCode} {this.StatusCode}");
 
-            foreach (var header in this.Headers.Values)
+            foreach (var header in this.Headers)
             {
                 result.AppendLine(header.ToString());
             }
 
-            foreach (var cookie in this.Cookies.Values)
+            foreach (var cookie in this.Cookies)
             {
                 result.AppendLine($"{HttpHeader.SetCookie}: {cookie}");
             }
 
-            if (!string.IsNullOrEmpty(this.Content))
+            if (this.HasContent)
             {
                 result.AppendLine();
-                result.Append(this.Content);
             }
 
             return result.ToString();
-        }
-
-        protected void PrepareContent(string content, string contentType)
-        {
-            Guard.AgainstNull(content, nameof(content));
-            Guard.AgainstNull(contentType, nameof(contentType));
-
-            var contentLength = Encoding.UTF8.GetByteCount(content).ToString();
-
-            this.AddHeader(HttpHeader.ContentType, contentType);
-            this.AddHeader(HttpHeader.ContentLength, contentLength);
-
-            this.Content = content;
         }
     }
 }

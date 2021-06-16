@@ -64,7 +64,7 @@ namespace MyWebServer
 
                         this.PrepareSession(request, response);
 
-                        this.LogPipeline(request, response);
+                        this.LogPipeline(requestText, response.ToString());
 
                         await WriteResponse(networkStream, response);
                     }
@@ -106,7 +106,14 @@ namespace MyWebServer
         }
 
         private void PrepareSession(HttpRequest request, HttpResponse response)
-            => response.AddCookie(HttpSession.SessionCookieName, request.Session.Id);
+        {
+            if (request.Session.IsNew)
+            {
+                response.Cookies.Add(HttpSession.SessionCookieName, request.Session.Id);
+
+                request.Session.IsNew = false;
+            }
+        }
 
         private async Task HandleError(NetworkStream networkStream, Exception exc)
         {
@@ -117,7 +124,7 @@ namespace MyWebServer
             await WriteResponse(networkStream, errorResponse);
         }
 
-        private void LogPipeline(HttpRequest request, HttpResponse response)
+        private void LogPipeline(string request, string response)
         {
             var separator = new string('-', 50);
             var log = new StringBuilder();
@@ -131,20 +138,25 @@ namespace MyWebServer
             log.AppendLine();
 
             log.AppendLine("RESPONSE:");
-            log.AppendLine(response.ToString());
+            log.AppendLine(response);
 
             log.AppendLine();
 
-            Console.WriteLine(log.ToString());
+            Console.WriteLine(log);
         }
 
-        private async Task WriteResponse(NetworkStream networkStream, HttpResponse response)
+        private async Task WriteResponse(
+             NetworkStream networkStream,
+             HttpResponse response)
         {
-           
             var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
 
             await networkStream.WriteAsync(responseBytes);
 
+            if (response.HasContent)
+            {
+                await networkStream.WriteAsync(response.Content);
+            }
         }
     }
 }
