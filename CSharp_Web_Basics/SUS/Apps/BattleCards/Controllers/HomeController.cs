@@ -12,7 +12,7 @@ namespace BattleCards.Controllers
             {
                 return this.Redirect("/Cards/All");
             }
-
+             
             return this.View();
         }
     }

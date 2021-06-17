@@ -1,9 +1,8 @@
 ﻿using BattleCards.Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Text;
-using System.Security.Cryptography;
 using SUS.MvcFramework;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BattleCards.Services
 {

@@ -109,7 +109,7 @@ namespace BattleCards.Controllers
             {
                 return this.Error("Only logged-in users can logout.");
             }
-
+            
             this.SignOut();
             return this.Redirect("/");
         }
