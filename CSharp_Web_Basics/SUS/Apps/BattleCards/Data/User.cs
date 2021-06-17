@@ -11,7 +11,7 @@ namespace BattleCards.Data
         public User()
         {
             this.Id = Guid.NewGuid().ToString();
-            //this.Role = IdentityRole.User;
+            this.Role = IdentityRole.User;
             this.Cards = new HashSet<UserCard>();
         }
 

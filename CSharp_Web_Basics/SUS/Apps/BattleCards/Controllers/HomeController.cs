@@ -1,7 +1,5 @@
-﻿using BattleCards.ViewModels;
-using SUS.HTTP;
+﻿using SUS.HTTP;
 using SUS.MvcFramework;
-using System;
 
 namespace BattleCards.Controllers
 {
@@ -10,17 +8,12 @@ namespace BattleCards.Controllers
         [HttpGet("/")]
         public HttpResponse Index()
         {
-            var viewModel = new IndexViewModel();
-            viewModel.CurrentYear = DateTime.UtcNow.Year;
-            viewModel.Message = "Welcome to Battle Cards";
+            if (this.IsUserSignedIn())
+            {
+                return this.Redirect("/Cards/All");
+            }
 
-            return View(viewModel);
+            return this.View();
         }
-
-        public HttpResponse About()
-        {
-            return View();
-        }
-
     }
 }

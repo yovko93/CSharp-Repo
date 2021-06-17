@@ -14,7 +14,6 @@ namespace SUS.HTTP
         {
             var headerParts = headerLine.Split(new string[] { ": " },
                 2, StringSplitOptions.None);
-
             this.Name = headerParts[0];
             this.Value = headerParts[1];
         }
