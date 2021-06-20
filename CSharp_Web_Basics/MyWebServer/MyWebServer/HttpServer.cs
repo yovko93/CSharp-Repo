@@ -9,7 +9,6 @@ using MyWebServer.Services;
 
 namespace MyWebServer
 {
-
     public class HttpServer
     {
         private readonly IPAddress ipAddress;
@@ -55,6 +54,21 @@ namespace MyWebServer
         public HttpServer WithServices(Action<IServiceCollection> serviceCollectionConfiguration)
         {
             serviceCollectionConfiguration(this.serviceCollection);
+
+            return this;
+        }
+
+        public HttpServer WithConfiguration<TService>(Action<TService> configuration)
+            where TService : class
+        {
+            var service = this.serviceCollection.Get<TService>();
+
+            if (service == null)
+            {
+                throw new InvalidOperationException($"Service '{typeof(TService).FullName}' is not registered.");
+            }
+
+            configuration(service);
 
             return this;
         }

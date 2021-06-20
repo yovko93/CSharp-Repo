@@ -1,8 +1,9 @@
-﻿namespace MyWebServer.Services
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace MyWebServer.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     public class ServiceCollection : IServiceCollection
     {
@@ -19,6 +20,10 @@
 
             return this;
         }
+
+        public IServiceCollection Add<TService>()
+            where TService : class
+            => this.Add<TService, TService>();
 
         public TService Get<TService>()
             where TService : class
@@ -41,6 +46,10 @@
             {
                 type = this.services[type];
             }
+            else if (type.IsInterface)
+            {
+                throw new InvalidOperationException($"Service '{type.FullName}' is not registered.");
+            }
 
             var constructors = type.GetConstructors();
 
@@ -60,7 +69,7 @@
                 var parameterType = parameters[i].ParameterType;
 
                 var parameterValue = this.CreateInstance(parameterType);
-            
+
                 parameterValues[i] = parameterValue;
             }
 

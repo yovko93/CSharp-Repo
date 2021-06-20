@@ -7,7 +7,6 @@ using MyWebServer.Services;
 
 namespace MyWebServer.Http
 {
-
     public class HttpRequest
     {
         private static Dictionary<string, HttpSession> Sessions = new();

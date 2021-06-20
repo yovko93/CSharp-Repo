@@ -3,7 +3,6 @@ using MyWebServer.Http.Collections;
 
 namespace MyWebServer.Results
 {
-
     public abstract class ActionResult : HttpResponse
     {
         protected ActionResult(HttpResponse response)

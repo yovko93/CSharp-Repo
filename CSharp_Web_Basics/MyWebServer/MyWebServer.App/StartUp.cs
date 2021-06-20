@@ -1,6 +1,7 @@
 ﻿using MyWebServer.App.Controllers;
 using MyWebServer.App.Data;
 using MyWebServer.Controllers;
+using MyWebServer.Results.Views;
 using System.Threading.Tasks;
 
 namespace MyWebServer.App
@@ -14,6 +15,8 @@ namespace MyWebServer.App
                    .MapControllers()
                    .MapGet<HomeController>("/ToCats", c => c.LocalRedirect()))
                .WithServices(services => services
+                   .Add<IViewEngine, ParserViewEngine
+                       >()
                    .Add<IData, MyDbContext>())
                .Start();
 

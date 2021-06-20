@@ -6,7 +6,6 @@ using System.Text;
 
 namespace MyWebServer.Http
 {
-
     public class HttpResponse
     {
         public HttpResponse(HttpStatusCode statusCode)

@@ -1,8 +1,8 @@
-﻿using MyWebServer.Common;
-using MyWebServer.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using MyWebServer.Common;
+using MyWebServer.Http;
 
 namespace MyWebServer.Routing
 {
@@ -19,7 +19,9 @@ namespace MyWebServer.Routing
         };
 
         public IRoutingTable Map(
-           HttpMethod method, string path, HttpResponse response)
+            HttpMethod method,
+            string path,
+            HttpResponse response)
         {
             Guard.AgainstNull(response, nameof(response));
 
@@ -31,19 +33,28 @@ namespace MyWebServer.Routing
             Guard.AgainstNull(path, nameof(path));
             Guard.AgainstNull(responseFunction, nameof(responseFunction));
 
+            if (this.routes.ContainsKey(method) && this.routes[method].ContainsKey(path.ToLower()))
+            {
+                throw new InvalidOperationException($"Route '{method.ToString().ToUpper()} {path}' already exists. Multiple routes with the same method and path are not supported.");
+            }
+
             this.routes[method][path.ToLower()] = responseFunction;
 
             return this;
         }
 
-        public IRoutingTable MapGet(string path, HttpResponse response)
+        public IRoutingTable MapGet(
+            string path,
+            HttpResponse response)
             => MapGet(path, request => response);
 
         public IRoutingTable MapGet(string path, Func<HttpRequest, HttpResponse> responseFunction)
             => Map(HttpMethod.Get, path, responseFunction);
 
-        public IRoutingTable MapPost(string path, HttpResponse response)
-          => MapPost(path, request => response);
+        public IRoutingTable MapPost(
+            string path,
+            HttpResponse response)
+            => MapPost(path, request => response);
 
         public IRoutingTable MapPost(string path, Func<HttpRequest, HttpResponse> responseFunction)
             => Map(HttpMethod.Post, path, responseFunction);
@@ -68,6 +79,12 @@ namespace MyWebServer.Routing
         {
             var currentDirectory = Directory.GetCurrentDirectory();
             var staticFilesFolder = Path.Combine(currentDirectory, folder);
+
+            if (!Directory.Exists(staticFilesFolder))
+            {
+                return this;
+            }
+
             var staticFiles = Directory.GetFiles(
                 staticFilesFolder,
                 "*.*",
