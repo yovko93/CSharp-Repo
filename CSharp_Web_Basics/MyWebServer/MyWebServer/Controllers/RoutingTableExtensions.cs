@@ -7,7 +7,6 @@ using MyWebServer.Routing;
 
 namespace MyWebServer.Controllers
 {
-
     public static class RoutingTableExtensions
     {
         private static Type stringType = typeof(string);
@@ -89,7 +88,19 @@ namespace MyWebServer.Controllers
 
                 var parameterValues = GetParameterValues(controllerAction, request);
 
-                return (HttpResponse)controllerAction.Invoke(controllerInstance, parameterValues);
+                try
+                {
+                    return (HttpResponse)controllerAction.Invoke(controllerInstance, parameterValues);
+                }
+                catch (Exception exception)
+                {
+                    if (exception is TargetInvocationException targetInvocationException)
+                    {
+                        exception = targetInvocationException.InnerException;
+                    }
+
+                    throw new InvalidOperationException($"Action '{controllerAction.Name}' in '{controllerAction.DeclaringType.Name}' throws an '{exception.GetType().Name}' with message '{exception.Message}'.");
+                };
             };
 
         private static TController CreateController<TController>(HttpRequest request)
