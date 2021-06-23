@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace MyWebServer.Services
 {
-
     public class ServiceCollection : IServiceCollection
     {
         private readonly Dictionary<Type, Type> services;
