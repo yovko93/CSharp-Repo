@@ -134,12 +134,12 @@
             {
                 T[] itemsCopy = new T[this.items.Length * 2];
 
-                for (int i = 0; i < this.items.Length; i++)
-                {
-                    itemsCopy[i] = this.items[i];
-                }
+                //for (int i = 0; i < this.items.Length; i++)
+                //{
+                //    itemsCopy[i] = this.items[i];
+                //}
 
-                //Array.Copy(this.items, itemsCopy, this.items.Length);
+                Array.Copy(this.items, itemsCopy, this.items.Length);
 
                 this.items = itemsCopy;
             }
@@ -149,7 +149,7 @@
         {
             if (index < 0 || index >= this.Count)
             {
-                throw new IndexOutOfRangeException("Invalid index given");
+                throw new IndexOutOfRangeException("Invalid index given!");
             }
         }
         #endregion
