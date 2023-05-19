@@ -6,19 +6,30 @@
 
     public class CircularQueue<T> : IAbstractQueue<T>
     {
-        public int Count => throw new NotImplementedException();
+        private T[] elements;
+        private int startIndex;
+        private int endIndex;
 
-        public T Dequeue()
+        public CircularQueue(int capacity = 4)
         {
-            throw new NotImplementedException();
+            this.elements = new T[capacity];
         }
+
+        public int Count { get; private set; }
 
         public void Enqueue(T item)
         {
-            throw new NotImplementedException();
+            if (this.Count >= this.elements.Length)
+            {
+                this.Grow();
+            }
+
+            this.elements[this.endIndex] = item;
+            this.endIndex = (this.endIndex + 1) % this.elements.Length;
+            this.Count++;
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public T Dequeue()
         {
             throw new NotImplementedException();
         }
@@ -33,10 +44,24 @@
             throw new NotImplementedException();
         }
 
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int currentIndex = 0; currentIndex < this.Count; currentIndex++)
+            {
+                var index = (startIndex + currentIndex) % this.elements.Length;
+                yield return this.elements[index];
+            }
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
+            => this.GetEnumerator();
+
+        #region Helpers
+        private void Grow()
         {
             throw new NotImplementedException();
         }
+        #endregion
     }
 
 }
