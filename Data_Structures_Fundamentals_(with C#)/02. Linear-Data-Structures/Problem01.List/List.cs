@@ -127,7 +127,7 @@
         IEnumerator IEnumerable.GetEnumerator()
             => this.GetEnumerator();
 
-        #region Privates
+        #region Helpers
         private void Grow()
         {
             if (this.Count == this.items.Length)

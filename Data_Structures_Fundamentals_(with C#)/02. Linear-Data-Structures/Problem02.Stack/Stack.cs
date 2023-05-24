@@ -83,7 +83,7 @@
         IEnumerator IEnumerable.GetEnumerator()
             => this.GetEnumerator();
 
-        #region Privates
+        #region Helpers
         private void ValidateNode()
         {
             if (this.top == null)
