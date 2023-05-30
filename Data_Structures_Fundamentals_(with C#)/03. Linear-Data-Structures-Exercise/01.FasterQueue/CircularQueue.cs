@@ -59,7 +59,16 @@
         #region Helpers
         private void Grow()
         {
-            throw new NotImplementedException();
+            T[] itemsCopy = new T[this.elements.Length * 2];
+
+            //for (int i = 0; i < this.items.Length; i++)
+            //{
+            //    itemsCopy[i] = this.items[i];
+            //}
+
+            Array.Copy(this.elements, itemsCopy, this.elements.Length);
+
+            this.elements = itemsCopy;
         }
         #endregion
     }
