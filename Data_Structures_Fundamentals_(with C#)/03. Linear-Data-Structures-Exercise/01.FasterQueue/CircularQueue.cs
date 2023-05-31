@@ -41,7 +41,7 @@
 
         public T[] ToArray()
         {
-            throw new NotImplementedException();
+            return this.CopyElements(new T[this.Count]);
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -59,16 +59,19 @@
         #region Helpers
         private void Grow()
         {
-            T[] itemsCopy = new T[this.elements.Length * 2];
+            this.elements = this.CopyElements(new T[this.elements.Length * 2]);
+            this.startIndex = 0;
+            this.endIndex = this.Count;
+        }
 
-            //for (int i = 0; i < this.items.Length; i++)
-            //{
-            //    itemsCopy[i] = this.items[i];
-            //}
+        private T[] CopyElements(T[] resultArr)
+        {
+            for (int i = 0; i < this.Count; i++)
+            {
+                resultArr[i] = this.elements[(this.startIndex + i) % this.elements.Length];
+            }
 
-            Array.Copy(this.elements, itemsCopy, this.elements.Length);
-
-            this.elements = itemsCopy;
+            return resultArr;
         }
         #endregion
     }
