@@ -6,6 +6,21 @@
 
     public class DoublyLinkedList<T> : IAbstractLinkedList<T>
     {
+        private class Node
+        {
+            public Node Next { get; set; }
+            public Node Previous { get; set; }
+            public T Value { get; set; }
+
+            public Node(T value)
+            {
+                this.Value = value;
+            }
+        }
+
+        private Node head;
+        private Node tail;
+
         public int Count { get; private set; }
 
         public void AddFirst(T item)
@@ -44,8 +59,6 @@
         }
 
         IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+            => this.GetEnumerator();
     }
 }
