@@ -31,12 +31,21 @@
 
         public T Dequeue()
         {
-            throw new NotImplementedException();
+            this.EnsureNotEmpty();
+
+            var deletedItem = this.elements[this.startIndex];
+
+            this.startIndex = (this.startIndex + 1) % this.elements.Length;
+            this.Count--;
+
+            return deletedItem;
         }
 
         public T Peek()
         {
-            throw new NotImplementedException();
+            this.EnsureNotEmpty();
+
+            return this.elements[this.startIndex];
         }
 
         public T[] ToArray()
@@ -72,6 +81,14 @@
             }
 
             return resultArr;
+        }
+
+        private void EnsureNotEmpty()
+        {
+            if (this.Count == 0)
+            {
+                throw new InvalidOperationException();
+            }
         }
         #endregion
     }
