@@ -65,6 +65,7 @@
         IEnumerator IEnumerable.GetEnumerator()
             => this.GetEnumerator();
 
+
         #region Helpers
         private void Grow()
         {
