@@ -70,7 +70,20 @@
         {
             this.ValidateIndex(index);
 
-            throw new NotImplementedException();
+            if (this.Count == this.items.Length)
+            {
+                this.Grow();
+            }
+
+            index = this.Count - index;
+            for (int i = this.Count; i > index; i--)
+            {
+                this.items[i] = this.items[i - 1];
+            }
+
+            this.items[index] = item;
+
+            this.Count++;
         }
 
         public bool Remove(T item)
