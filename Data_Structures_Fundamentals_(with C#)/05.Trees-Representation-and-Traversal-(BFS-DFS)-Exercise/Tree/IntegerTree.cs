@@ -10,14 +10,53 @@
         {
         }
 
+        // DFS
         public IEnumerable<IEnumerable<int>> GetPathsWithGivenSum(int sum)
         {
-            throw new NotImplementedException();
+            var result = new List<List<int>>();
+
+            var currentPath = new LinkedList<int>();
+            currentPath.AddFirst(this.Key);
+            int currentSum = this.Key;
+
+            this.Dfs(this, result, currentPath, ref currentSum, sum);
+
+
+            return result;
         }
 
+        // BFS
         public IEnumerable<Tree<int>> GetSubtreesWithGivenSum(int sum)
         {
             throw new NotImplementedException();
         }
+
+        #region Helpers
+        private void Dfs(
+            Tree<int> subtree,
+            List<List<int>> result,
+            LinkedList<int> currentPath,
+            ref int currentSum,
+            int wantedSum)
+        {
+            foreach (var child in subtree.Children)
+            {
+                currentSum += child.Key;
+                currentPath.AddLast(child.Key);
+
+                this.Dfs(child, result, currentPath, ref currentSum, wantedSum);
+            }
+
+            if (currentSum == wantedSum)
+            {
+                result.Add(new List<int>(currentPath));
+            }
+
+            currentSum -= subtree.Key;
+            currentPath.RemoveLast();
+        }
+        #endregion
     }
 }
+
+
