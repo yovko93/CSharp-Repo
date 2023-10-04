@@ -30,10 +30,18 @@
 
         public void ForEachInOrder(Action<T> action)
         {
+            if (this == null)
+            {
+                return;
+            }
+
             this.LeftChild.ForEachInOrder(action);
 
-            //action.Invoke(this.Value);
-            action(this.Value);
+            action.Invoke(this.Value);
+            this.ForEachInOrder(action);
+            //action(this.Value);
+
+            //this.ForEachInOrder(action);
 
 
             this.RightChild.ForEachInOrder(action);
