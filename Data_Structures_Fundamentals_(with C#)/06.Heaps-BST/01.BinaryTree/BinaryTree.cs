@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using System.Xml.Linq;
 
     public class BinaryTree<T> : IAbstractBinaryTree<T>
     {
@@ -30,19 +31,25 @@
 
         public void ForEachInOrder(Action<T> action)
         {
-            if (this == null)
+            if (this.LeftChild == null)
             {
+                action.Invoke(this.Value);
                 return;
             }
 
             this.LeftChild.ForEachInOrder(action);
 
+            if (this.Value == null)
+            {
+                return;
+            }
+
             action.Invoke(this.Value);
-            this.ForEachInOrder(action);
-            //action(this.Value);
 
-            //this.ForEachInOrder(action);
-
+            if (this.RightChild == null)
+            {
+                return;
+            }
 
             this.RightChild.ForEachInOrder(action);
         }
