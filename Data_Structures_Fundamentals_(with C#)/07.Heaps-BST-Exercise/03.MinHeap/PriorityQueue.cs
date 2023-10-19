@@ -8,6 +8,7 @@ namespace _03.MinHeap
         public PriorityQueue()
         {
             this.elements = new List<T>();
+            this.indexes = new Dictionary<T, int>();
         }
 
         public void Enqueue(T element)
@@ -22,7 +23,17 @@ namespace _03.MinHeap
 
         public void DecreaseKey(T key)
         {
-            throw new NotImplementedException();
+            HeapifyUp(this.indexes[key]);
+        }
+
+        public void DecreaseKey(T key, T newKey)
+        {
+            var oldIndex = this.indexes[key];
+            this.elements[oldIndex] = newKey;
+            this.indexes.Remove(key);
+            this.indexes.Add(newKey, oldIndex);
+
+            this.HeapifyUp(oldIndex);
         }
     }
 }
