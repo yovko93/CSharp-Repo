@@ -67,7 +67,7 @@ namespace Exam.DeliveriesManager
             //return deliverers
             //    .Where(d => packagesByDeliverer.ContainsValue(d.Key))
             //    .Select(p => p.Value)
-            //    .OrderByDescending(d => packagesByDeliverer.Count)
+            //    .OrderByDescending(d => packagesByDeliverer.Values.Count(pd => pd == d.Id))
             //    .ThenBy(d => d.Name);
         }
 

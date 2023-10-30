@@ -1,63 +1,100 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Exam.DeliveriesManager
 {
     public class AirlinesManager : IAirlinesManager
     {
+        private Dictionary<string, Airline> airlines = new Dictionary<string, Airline>();
+        private Dictionary<string, Flight> flights = new Dictionary<string, Flight>();
+
         public void AddAirline(Airline airline)
         {
-            throw new NotImplementedException();
+            airlines.Add(airline.Id, airline);
         }
 
         public void AddFlight(Airline airline, Flight flight)
         {
-            throw new NotImplementedException();
+            if (!airlines.ContainsKey(airline.Id))
+            {
+                throw new ArgumentException();
+            }
+
+            airlines[airline.Id].Flights.Add(flight);
+            flights.Add(flight.Id, flight);
         }
 
         public bool Contains(Airline airline)
         {
-            throw new NotImplementedException();
+            return airlines.ContainsKey(airline.Id);
         }
 
         public bool Contains(Flight flight)
         {
-            throw new NotImplementedException();
+            return flights.ContainsKey(flight.Id);
         }
 
         public void DeleteAirline(Airline airline)
         {
-            throw new NotImplementedException();
+            if (!airlines.ContainsKey(airline.Id))
+            {
+                throw new ArgumentException();
+            }
+
+            foreach (var flight in flights.Values)
+            {
+                flights.Remove(flight.Id);
+            }
+
+            airlines.Remove(airline.Id);
         }
 
         public IEnumerable<Airline> GetAirlinesOrderedByRatingThenByCountOfFlightsThenByName()
         {
-            throw new NotImplementedException();
+            return airlines
+                .Select(a => a.Value)
+                .OrderByDescending(a => a.Rating)
+                .ThenByDescending(a => a.Flights.Count)
+                .ThenBy(a => a.Name);
         }
 
         public IEnumerable<Airline> GetAirlinesWithFlightsFromOriginToDestination(string origin, string destination)
         {
-            throw new NotImplementedException();
+            return airlines
+                .Select(a => a.Value)
+                .Where(a => a.Flights
+                    .Any(f => f.Destination == destination && f.Origin == origin && !f.IsCompleted));
         }
 
         public IEnumerable<Flight> GetAllFlights()
         {
-            throw new NotImplementedException();
+            return flights.Values;
         }
 
         public IEnumerable<Flight> GetCompletedFlights()
         {
-            throw new NotImplementedException();
+            return flights.Values
+                .Where(x => x.IsCompleted == true);
         }
 
         public IEnumerable<Flight> GetFlightsOrderedByCompletionThenByNumber()
         {
-            throw new NotImplementedException();
+            return flights.Values
+                .OrderBy(f => f.IsCompleted)
+                .ThenBy(f => f.Number);
         }
 
         public Flight PerformFlight(Airline airline, Flight flight)
         {
-            throw new NotImplementedException();
+            if (!flights.ContainsKey(flight.Id) || !airlines.ContainsKey(airline.Id))
+            {
+                throw new ArgumentException();
+            }
+
+            flights[flight.Id].IsCompleted = true;
+
+            return flights[flight.Id];
         }
     }
 }
