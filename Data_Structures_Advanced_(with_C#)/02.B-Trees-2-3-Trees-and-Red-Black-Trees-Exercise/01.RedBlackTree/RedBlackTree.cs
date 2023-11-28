@@ -383,6 +383,36 @@
         {
             return a.CompareTo(b) == 0;
         }
+
+        public bool Contains(T element)
+        {
+            Node current = this.FindElement(element);
+
+            return current != null;
+        }
+
+        private Node FindElement(T element)
+        {
+            Node current = this.root;
+
+            while (current != null)
+            {
+                if (current.Value.CompareTo(element) > 0)
+                {
+                    current = current.Left;
+                }
+                else if (current.Value.CompareTo(element) < 0)
+                {
+                    current = current.Right;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return current;
+        }
         #endregion
     }
 }
