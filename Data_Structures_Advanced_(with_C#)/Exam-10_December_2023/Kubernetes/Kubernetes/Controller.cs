@@ -18,15 +18,6 @@ namespace Kubernetes
         {
             podQueue.AddLast(pod);
             allPods.Add(pod.Id, pod);
-            //if (allPods.ContainsKey(pod.Id))
-            //{
-            //    Upgrade(pod);
-            //}
-            //else
-            //{
-            //    allPods.Add(pod.Id, pod);
-            //    podQueue.AddLast(pod);
-            //}
         }
 
         public Pod GetPod(string podId)
